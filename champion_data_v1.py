@@ -70,10 +70,11 @@ def format_data():
     
         dfs = [df.set_index('opponent_name') for df in matchup_data_list]
         combined_df = pd.concat(dfs, axis=1)
+        print(combined_df)
         combined_df = combined_df.sort_values("opponent_name")
         combined_df = combined_df.sort_index(axis=1)
         combined_df = combined_df.fillna(50.00)
-
+        combined_df.columns = combined_df.columns.str.replace("champ_","")
         combined_df.to_csv(f"./role_matchup_data/{role}_matchups.csv")
             
 
