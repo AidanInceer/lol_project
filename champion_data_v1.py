@@ -10,19 +10,19 @@ def champion_links():
     page = requests.get(url,headers= user_agent)
     soup = BeautifulSoup(page.text, "html.parser")
     champion_section = soup.find("nav", {"class":"css-pqbqz6 e1n0mtzi8"})
-
-    str_link_list = []
-    for init_link in champion_section.find_all('a', href=True):
-        str_link = str(init_link['href'])
-        stripped_link = str_link.replace("/champions","")
-        str_link_list.append(stripped_link)
-
+    link_base = "https://euw.op.gg/champions/"
     link_list = []
-    for link in str_link_list:
-        if link =="/champion":
-            pass
-        else:
-            link_list.append(url+link+"/counters")
+    for init_link in champion_section.find_all('a', href=True):
+        for role_raw in init_link.find_all("i"):
+            role = role_raw.text.strip().lower()
+            if role == "middle":
+                role = "mid"
+            elif role == "bottom":
+                role = "adc"
+            str_link_raw = str(init_link['href'])
+            str_link_stripped = str_link_raw.split("/")[2]
+            link = (link_base + str_link_stripped + "/" + role + "/counters")
+            link_list.append(link)
     return link_list
     
 def matchup_data():
@@ -78,3 +78,4 @@ def format_data():
             
 
 format_data()
+
